@@ -1,0 +1,8 @@
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.DS_Store
+# Third-party pictures used only to draw the boards locally
+brand/assets/wallpaper.jpg
+brand/assets/logo-*.png

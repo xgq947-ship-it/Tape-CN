@@ -1,0 +1,73 @@
+name: Tape
+options:
+  bundleIdPrefix: com.yorben
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: 34LM5DW4G4
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    SWIFT_EMIT_LOC_STRINGS: NO
+targets:
+  Tape:
+    type: application
+    platform: macOS
+    sources:
+      - path: Tape
+        type: syncedFolder
+    info:
+      path: Config/Info.plist
+      properties:
+        CFBundleName: Tape
+        CFBundleDisplayName: Tape
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIconName: AppIcon
+        LSUIElement: true
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSApplicationCategoryType: public.app-category.finance
+        NSHumanReadableCopyright: © 2026 Yorben Vander Sleyen
+        NSPrincipalClass: NSApplication
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yorben.tape
+        PRODUCT_NAME: Tape
+        ENABLE_HARDENED_RUNTIME: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        COMBINE_HIDPI_IMAGES: YES
+  TapeTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: TapeTests
+        type: syncedFolder
+    dependencies:
+      - target: Tape
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yorben.tapeTests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Tape.app/Contents/MacOS/Tape
+        BUNDLE_LOADER: $(TEST_HOST)
+schemes:
+  Tape:
+    build:
+      targets:
+        Tape: all
+        TapeTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - TapeTests
+    archive:
+      config: Release

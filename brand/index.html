@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tape — Brand & design proposals</title>
+<style>
+  :root {
+    --canvas: #08090B;
+    --panel: #121316;
+    --panel-hi: #17181C;
+    --line: rgba(255,255,255,0.07);
+    --ink: #F4F4F2;
+    --muted: #8E8E93;
+    --quiet: #5A5A5F;
+    --silver: #DCDCDA;
+    --silver-hi: #F4F4F2;
+    --silver-lo: #A9A9A7;
+    --graphite: #16171B;
+    --onyx: #0B0B0E;
+    --mint: #3EE6A8;
+    --loss: #FF7D76;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --r: 22px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  .page { width: min(1240px, 100% - 48px); margin: 40px auto 80px; }
+  header.top { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 18px; }
+  header.top .title { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); }
+  header.top .meta { font-size: 12px; color: var(--quiet); font-family: var(--mono); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .panel { position: relative; background: var(--panel); border-radius: var(--r); overflow: hidden; min-height: 300px; border: 1px solid var(--line); }
+  .span2 { grid-column: span 2; }
+  .span3 { grid-column: span 3; }
+  .label { position: absolute; left: 22px; top: 18px; font: 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--quiet); z-index: 5; }
+  .num { position: absolute; right: 22px; top: 18px; font: 11px/1 var(--mono); color: var(--quiet); z-index: 5; }
+  .foot { position: absolute; left: 22px; bottom: 18px; font: 11px/1 var(--mono); color: var(--quiet); z-index: 5; }
+
+  /* 01 Cover */
+  .cover { display: flex; align-items: center; gap: 34px; padding: 0 64px; background:
+      radial-gradient(70% 90% at 12% 0%, rgba(255,255,255,0.06), transparent 60%), var(--panel); }
+  .cover img { width: 132px; height: 132px; border-radius: 30px; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06); }
+  .wordmark { font-size: 104px; font-weight: 600; letter-spacing: -0.055em; line-height: 0.9; }
+  .wordmark .dot { color: var(--mint); }
+  .cover .sub { margin-top: 14px; font-size: 17px; color: var(--muted); letter-spacing: -0.01em; }
+
+  /* 02 Construction */
+  .construct { display: grid; place-items: center; }
+  .construct svg { width: 78%; height: auto; margin-top: 18px; }
+
+  /* 03 Application: the bottom of the screen at 1:1 */
+  .screen { height: 300px; background: #0d0e10; }
+  .screen .wall { position: absolute; inset: 0; background: url(assets/wallpaper.jpg) -64px bottom / 2048px 1080px no-repeat; }
+  .screen .strip { position: absolute; left: 0; bottom: 0; width: 1920px; height: 109px; }
+  .dock { position: absolute; bottom: 3px; height: 85px; border-radius: 26px;
+          background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28);
+          -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.35);
+          display: flex; align-items: center; gap: 4px; padding: 0 10px; }
+  .tile { width: 65px; height: 65px; border-radius: 15px; flex: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 6px rgba(0,0,0,0.18); }
+  .divider { width: 1px; height: 54px; background: rgba(255,255,255,0.35); margin: 0 14px; flex: none; }
+  .menubar { position: absolute; left: 0; right: 0; top: 0; height: 30px; background: rgba(20,20,24,0.25);
+             -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); display: flex; align-items: center; padding: 0 16px; gap: 18px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.92); }
+  .menubar .right { margin-left: auto; display: flex; gap: 16px; align-items: center; }
+
+  /* 04 Essence */
+  .essence { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 30px 56px; }
+  .essence .big { font-size: 54px; font-weight: 600; letter-spacing: -0.045em; line-height: 0.95; }
+  .essence .big span { color: var(--quiet); }
+
+  /* 05 Colour */
+  .colors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; position: absolute; inset: 56px 22px 52px; border-radius: 14px; overflow: hidden; }
+  .chip { display: flex; flex-direction: column; justify-content: flex-end; padding: 12px 10px; font: 10.5px/1.45 var(--mono); }
+  .chip b { font: 600 12px/1.3 var(--font); display: block; margin-bottom: 2px; letter-spacing: -0.01em; }
+
+  /* 06 Type */
+  .type { padding: 64px 26px 0; }
+  .type .specimen { font-size: 64px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+  .type .digits { margin-top: 18px; font-size: 30px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; color: var(--silver); }
+  .type .note { margin-top: 18px; font: 11px/1.7 var(--mono); color: var(--muted); }
+
+  /* 07 System detail */
+  .system { padding: 58px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .menuicon { display: flex; gap: 10px; align-items: center; }
+  .menuicon .bar { height: 34px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 12px; gap: 14px; color: var(--silver); }
+  .card { border-radius: 20px; padding: 16px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.09);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+  .card .row { display: flex; align-items: center; gap: 10px; }
+  .card .logo { width: 30px; height: 30px; border-radius: 8px; overflow: hidden; }
+  .card .logo img { width: 100%; height: 100%; object-fit: cover; }
+  .card .name { font-size: 12.5px; font-weight: 600; }
+  .card .sub { font-size: 10.5px; color: var(--muted); }
+  .card .price { margin-top: 10px; font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .card .price span { color: var(--muted); }
+  .card .move { font-size: 11px; font-weight: 500; color: var(--loss); font-variant-numeric: tabular-nums; }
+  .card svg { display: block; margin-top: 8px; width: 100%; height: 44px; }
+
+  /* 08 Physical: printed ticker tape */
+  .paper { background: radial-gradient(80% 120% at 30% 10%, #1d1e22, var(--panel)); }
+  .paper .roll { position: absolute; left: -40px; right: -40px; top: 50%; height: 64px; transform: translateY(-50%) rotate(-3.5deg);
+                 background: linear-gradient(180deg, #F4F1E8, #E9E5D9); box-shadow: 0 18px 40px rgba(0,0,0,0.5), 0 2px 0 rgba(0,0,0,0.15);
+                 display: flex; align-items: center; gap: 46px; padding-left: 90px; white-space: nowrap;
+                 font: 500 22px/1 var(--mono); color: #1B1B1D; letter-spacing: 0.01em; }
+  .paper .roll::before, .paper .roll::after { content: ""; position: absolute; left: 0; right: 0; height: 6px;
+       background: radial-gradient(circle at 6px 3px, rgba(0,0,0,0.18) 1.6px, transparent 2px) 0 0 / 14px 6px repeat-x; }
+  .paper .roll::before { top: 4px; } .paper .roll::after { bottom: 4px; }
+  .paper .up { color: #08875A; } .paper .down { color: #D02E27; }
+  .paper .mk { font-family: var(--font); font-weight: 700; letter-spacing: -0.01em; }
+
+  /* Proposals */
+  h2 { margin: 72px 4px 6px; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; }
+  .lede { margin: 0 4px 22px; color: var(--muted); font-size: 15px; line-height: 1.55; max-width: 760px; }
+  .props { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .prop { display: grid; grid-template-columns: 300px 1fr; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .prop .text { padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+  .prop .tag { font: 11px/1 var(--mono); color: var(--quiet); letter-spacing: 0.08em; text-transform: uppercase; }
+  .prop h3 { margin: 2px 0 0; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  .prop p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+  .prop .pro { color: #9FE8C9; } .prop .con { color: #F3A9A4; }
+  .stage { position: relative; min-height: 160px; height: 100%; overflow: hidden; background: url(assets/wallpaper.jpg) -64px bottom / 2048px 1080px no-repeat; }
+  .stage .dockedge { position: absolute; right: -40px; left: auto; bottom: 3px; height: 85px; width: 210px; border-radius: 26px 0 0 26px; }
+  .tape { position: absolute; left: 14px; bottom: 25px; height: 42px; right: 230px; padding-left: 30px; display: flex; align-items: center; gap: 29px; overflow: hidden; white-space: nowrap;
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+          font-size: 14px; font-variant-numeric: tabular-nums; color: #F7F7F5;
+          text-shadow: 0 0 2.2px rgba(0,0,0,0.55), 0 0.5px 1px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.32); }
+  .q { display: inline-flex; align-items: center; gap: 7px; flex: none; }
+  .q .s { font-weight: 600; }
+  .q .p { font-weight: 500; }
+  .q .p i { font-style: normal; opacity: 0.62; }
+  .q .c { font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+  .q .c::before { content: ""; width: 8.5px; height: 7.5px; background: currentColor; }
+  .q .dn { color: #FF7D76; } .q .dn::before { clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .q .upc { color: #3EE6A8; } .q .upc::before { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .q img.lg { width: 15px; height: 15px; border-radius: 4px; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.25), 0 1px 3px rgba(0,0,0,0.4); }
+  .glass .q { padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,0.14); border: 0.5px solid rgba(255,255,255,0.3);
+              -webkit-backdrop-filter: blur(14px) saturate(1.6); backdrop-filter: blur(14px) saturate(1.6); text-shadow: 0 0 2px rgba(0,0,0,0.4); }
+  .glass { gap: 10px; }
+  .stack .q { flex-direction: column; align-items: flex-start; gap: 1px; }
+  .stack .q .s { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .stack .q .row { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; }
+  .stack { gap: 22px; }
+  .spark .q svg { width: 34px; height: 14px; overflow: visible; filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)); }
+  .through { right: auto; }
+  footer { margin: 48px 4px 0; color: var(--quiet); font: 11px/1.6 var(--mono); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div class="title">Tape · Identity system</div>
+    <div class="meta">v1.0 · November 2026 · yorben.me</div>
+  </header>
+
+  <section class="grid">
+    <!-- 01 -->
+    <div class="panel span2 cover">
+      <span class="label">01 — Mark</span><span class="num">Tape</span>
+      <img src="assets/icon.png" alt="Tape app icon">
+      <div>
+        <div class="wordmark">Tape<span class="dot">.</span></div>
+        <div class="sub">The market, beside your Dock.</div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="panel construct">
+      <span class="label">02 — Construction</span><span class="num">1 : 1</span>
+      <svg viewBox="0 0 100 100" fill="none">
+        <defs><pattern id="g" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10 0H0V10" stroke="rgba(255,255,255,0.06)" stroke-width="0.3"/></pattern></defs>
+        <rect width="100" height="100" fill="url(#g)"/>
+        <line x1="0" y1="62" x2="100" y2="62" stroke="rgba(62,230,168,0.35)" stroke-width="0.3" stroke-dasharray="1 1"/>
+        <line x1="0" y1="38" x2="100" y2="38" stroke="rgba(62,230,168,0.35)" stroke-width="0.3" stroke-dasharray="1 1"/>
+        <line x1="44" y1="0" x2="44" y2="100" stroke="rgba(255,255,255,0.12)" stroke-width="0.3" stroke-dasharray="1 1"/>
+        <line x1="56" y1="0" x2="56" y2="100" stroke="rgba(255,255,255,0.12)" stroke-width="0.3" stroke-dasharray="1 1"/>
+        <polyline points="6,62 44,62 56,38 70,38" stroke="#DCDCDA" stroke-width="10.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.07"/>
+        <polyline points="6,62 44,62 56,38 70,38" stroke="#DCDCDA" stroke-width="0.5"/>
+        <circle cx="89" cy="38" r="7.5" stroke="#3EE6A8" stroke-width="0.5"/>
+        <circle cx="89" cy="38" r="1" fill="#3EE6A8"/>
+        <text x="3" y="96" fill="#5A5A5F" font-size="3.2" font-family="ui-monospace">0.38 → 0.62 · one step · one live price</text>
+      </svg>
+    </div>
+
+    <!-- 03 -->
+    <div class="panel span3 screen">
+      <span class="label" style="top:46px;color:rgba(255,255,255,0.78)">03 — Application · 1:1 on a 1920 × 1080 display</span>
+      <div class="wall"></div>
+      <div class="menubar"><b></b><b>Finder</b><span>File</span><span>Edit</span><span>View</span><div class="right"><svg width="18" height="18" viewBox="0 0 1 1"><polyline points="0.06,0.62 0.44,0.62 0.56,0.38 0.70,0.38" fill="none" stroke="white" stroke-width="0.13" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0.89" cy="0.38" r="0.075" fill="white"/></svg><span>Fri 6 Nov 11:42</span></div></div>
+      <img class="strip" src="assets/bottom-strip.png" alt="Tape running beside the Dock">
+      <div class="dock" style="left:404px">
+        <div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div>
+        <div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div>
+        <div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div>
+        <div class="tile" style="background:linear-gradient(#5E9BFF,#2D6CF6)"></div>
+        <div class="tile" style="background:conic-gradient(#FF9F0A,#FFD60A,#30D158,#64D2FF,#BF5AF2,#FF375F,#FF9F0A)"></div>
+        <div class="tile" style="background:linear-gradient(#FFFFFF,#E5E5EA)"></div>
+        <div class="tile" style="background:linear-gradient(#5BF675,#2CC94B)"></div>
+        <div class="tile" style="background:linear-gradient(#FF5F7A,#FA233B)"></div>
+        <div class="tile" style="background:linear-gradient(#E9A0FF,#B44DFF)"></div>
+        <div class="tile" style="background:linear-gradient(#AEAEB2,#636366)"></div>
+        <div class="tile" style="background:linear-gradient(#FFFFFF,#E5E5EA)"></div>
+        <div class="divider"></div>
+        <div class="tile" style="background:linear-gradient(#FF8A65,#E0533A)"></div>
+      </div>
+      <span class="foot" style="top:66px;bottom:auto;color:rgba(255,255,255,0.6)">Live render from Tape · wallpaper sampled → light text · 22 pt from the Dock's glass</span>
+    </div>
+
+    <!-- 04 -->
+    <div class="panel essence">
+      <span class="label">04 — Essence</span><span class="num">Tagline</span>
+      <div class="big">Read<br>the tape<span>.</span></div>
+    </div>
+
+    <!-- 05 -->
+    <div class="panel">
+      <span class="label">05 — Colour</span><span class="num">sRGB</span>
+      <div class="colors">
+        <div class="chip" style="background:#0B0B0E;color:#8E8E93"><b style="color:#F4F4F2">Onyx</b>#0B0B0E</div>
+        <div class="chip" style="background:#DCDCDA;color:#5A5A58"><b style="color:#1C1C1E">Silver</b>#DCDCDA</div>
+        <div class="chip" style="background:#3EE6A8;color:#0B5A3F"><b style="color:#06140F">Mint · up</b>#3EE6A8</div>
+        <div class="chip" style="background:#FF7D76;color:#7A1E19"><b style="color:#2A0806">Coral · down</b>#FF7D76</div>
+        <div class="chip" style="background:linear-gradient(180deg,#7EC21B 0 25%,#37B6FF 0 50%,#FF9900 0 75%,#84A7FF 0);color:#0B0B0E;justify-content:flex-end"><b style="color:#0B0B0E">Brands</b>from logos</div>
+      </div>
+      <span class="foot">Brand hues kept; lightness moved into OKLab 0.74–0.93 on dark</span>
+    </div>
+
+    <!-- 06 -->
+    <div class="panel type">
+      <span class="label">06 — Type</span><span class="num">SF Pro</span>
+      <div class="specimen">NVDA</div>
+      <div class="digits">$181.60 <span style="color:var(--loss)">▾ 9.26%</span></div>
+      <div class="note">Symbol — Semibold · Price — Medium, tabular digits<br>Currency at 62% · Shadow 0.16 em + 0.7 em glow</div>
+    </div>
+
+    <!-- 07 -->
+    <div class="panel system">
+      <span class="label">07 — System</span><span class="num">UI</span>
+      <div class="menuicon">
+        <div class="bar">
+          <svg width="18" height="18" viewBox="0 0 1 1"><polyline points="0.06,0.62 0.44,0.62 0.56,0.38 0.70,0.38" fill="none" stroke="#DCDCDA" stroke-width="0.13" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0.89" cy="0.38" r="0.075" fill="#DCDCDA"/></svg>
+          <span style="font-size:12px;color:var(--muted)">Updated 11:42 · 2 listings trading</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><div class="logo"><img src="assets/logo-NVDA.png" alt=""></div><div><div class="name">NVIDIA Corporation</div><div class="sub">NVDA · NasdaqGS</div></div></div>
+        <div class="price"><span>$</span>181.60</div>
+        <div class="move">−18.53 · −9.26% <span style="color:var(--muted)">today</span></div>
+        <svg viewBox="0 0 200 44" preserveAspectRatio="none"><line x1="0" y1="6" x2="200" y2="6" stroke="#5A5A5F" stroke-dasharray="2 3"/><polyline fill="none" stroke="#FF7D76" stroke-width="1.6" points="0,8 18,12 30,10 44,19 60,17 76,24 92,22 110,29 126,27 140,33 160,31 176,36 196,38"/><circle cx="196" cy="38" r="2.6" fill="#FF7D76"/></svg>
+      </div>
+    </div>
+
+    <!-- 09 -->
+    <div class="panel" style="display:grid;place-items:center;background:radial-gradient(60% 60% at 50% 40%, rgba(62,230,168,0.08), transparent 70%), var(--panel)">
+      <span class="label">09 — Rules</span><span class="num">Do</span>
+      <div style="font-size:15px;line-height:2;color:var(--silver);padding:40px 26px 20px">
+        No background — ever.<br>
+        Colour names, not numbers.<br>
+        Green and coral only for moves.<br>
+        Still means crisp: rest on whole pixels.<br>
+        Zero work per frame while cruising.
+      </div>
+    </div>
+    <!-- 10 -->
+    <div class="panel">
+      <span class="label">10 — Motion</span><span class="num">pt / s</span>
+      <svg viewBox="0 0 300 200" style="position:absolute;inset:56px 18px 46px;width:calc(100% - 36px);height:calc(100% - 102px)" fill="none">
+        <line x1="0" y1="40" x2="300" y2="40" stroke="rgba(255,255,255,0.08)"/>
+        <line x1="0" y1="170" x2="300" y2="170" stroke="rgba(255,255,255,0.08)"/>
+        <text x="0" y="32" fill="#5A5A5F" font-size="9" font-family="ui-monospace">30 · cruising on the render server</text>
+        <text x="0" y="188" fill="#5A5A5F" font-size="9" font-family="ui-monospace">0 · still, on whole pixels</text>
+        <path d="M0 40 H70 C 82 40, 86 170, 112 170 H 180 C 200 170, 214 40, 260 40 H300" stroke="#3EE6A8" stroke-width="2"/>
+        <line x1="70" y1="40" x2="70" y2="176" stroke="rgba(255,255,255,0.12)" stroke-dasharray="2 3"/>
+        <line x1="180" y1="40" x2="180" y2="176" stroke="rgba(255,255,255,0.12)" stroke-dasharray="2 3"/>
+        <text x="118" y="160" fill="#8E8E93" font-size="9" font-family="ui-monospace">pointer · 0.5 s</text>
+        <text x="232" y="160" fill="#8E8E93" font-size="9" font-family="ui-monospace">away · 1.4 s</text>
+      </svg>
+      <span class="foot">0.1% CPU while cruising · eased, never sprung</span>
+    </div>
+
+    <!-- 08 -->
+    <div class="panel span3 paper" style="min-height:240px">
+      <span class="label">08 — Origin</span><span class="num">1867 → 2026</span>
+      <div class="roll">
+        <span><span class="mk">ASML</span> 1,282.40 <span class="up">▴ 2.59</span></span>
+        <span><span class="mk">NVDA</span> 181.60 <span class="down">▾ 9.26</span></span>
+        <span><span class="mk">VWCE</span> 164.44 <span class="down">▾ 0.93</span></span>
+        <span><span class="mk">META</span> 605.08 <span class="down">▾ 3.96</span></span>
+        <span><span class="mk">BTC</span> 68,127 <span class="down">▾ 4.62</span></span>
+      </div>
+      <span class="foot">Stock tickers printed prices on paper tape; traders "read the tape"</span>
+    </div>
+
+  </section>
+
+  <!-- Proposals -->
+  <h2>Ontwerpvoorstellen</h2>
+  <p class="lede">Op ware grootte, over jouw eigen wallpaper, met de koersen van vanochtend. Voorstel A is wat er nu draait. Elk ander voorstel kan een instelling worden of de nieuwe standaard. Zeg welke je wil, dan bouw ik het.</p>
+
+  <div class="props">
+    <div class="prop">
+      <div class="text"><span class="tag">A · Huidig</span><h3>Bureaubladlabel</h3>
+        <p>Alleen tekst met een zachte schaduw, zoals de labels op je bureaublad. Merkkleur zit in de naam.</p>
+        <p class="con">Merkrood (Tesla, Vanguard) wordt op donker bijna hetzelfde koraal als "verlies".</p></div>
+      <div class="stage"><div class="tape">
+        <span class="q"><span class="s">S&amp;P 500</span><span class="p">7,353.73</span><span class="c dn">4.36%</span></span>
+        <span class="q"><span class="s" style="color:#7EC21B">NVDA</span><span class="p"><i>$</i>181.60</span><span class="c dn">9.26%</span></span>
+        <span class="q"><span class="s">AAPL</span><span class="p"><i>$</i>344.17</span><span class="c dn">1.53%</span></span>
+        <span class="q"><span class="s" style="color:#FF7D7C">TSLA</span><span class="p"><i>$</i>343.69</span><span class="c dn">10.77%</span></span>
+      </div><div class="dockedge dock"><div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div><div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div><div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div></div></div>
+    </div>
+
+    <div class="prop">
+      <div class="text"><span class="tag">B · Aanrader</span><h3>Logostip</h3>
+        <p>Een logo van 15 pt vóór de naam; de naam zelf wordt wit. Het merk is meteen herkenbaar en rood of groen betekent altijd een koersbeweging.</p>
+        <p class="pro">Lost de botsing tussen rood en verlies op. Het logo komt al binnen voor de kaart.</p></div>
+      <div class="stage"><div class="tape">
+        <span class="q"><img class="lg" src="assets/logo-NVDA.png" alt=""><span class="s">NVDA</span><span class="p"><i>$</i>181.60</span><span class="c dn">9.26%</span></span>
+        <span class="q"><img class="lg" src="assets/logo-AAPL.png" alt=""><span class="s">AAPL</span><span class="p"><i>$</i>344.17</span><span class="c dn">1.53%</span></span>
+        <span class="q"><img class="lg" src="assets/logo-TSLA.png" alt=""><span class="s">TSLA</span><span class="p"><i>$</i>343.69</span><span class="c dn">10.77%</span></span>
+        <span class="q"><img class="lg" src="assets/logo-ASML.AS.png" alt=""><span class="s">ASML</span><span class="p"><i>€</i>1,282.40</span><span class="c upc">2.59%</span></span>
+      </div><div class="dockedge dock"><div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div><div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div><div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div></div></div>
+    </div>
+
+    <div class="prop">
+      <div class="text"><span class="tag">C</span><h3>Glascapsules</h3>
+        <p>Elke koers in een eigen capsule van Liquid Glass, uit hetzelfde materiaal als het Dock. Het leest als een verlengstuk van macOS.</p>
+        <p class="con">Niet meer volledig doorzichtig, en dat vroeg je juist.</p></div>
+      <div class="stage"><div class="tape glass">
+        <span class="q"><span class="s" style="color:#A6E35A">NVDA</span><span class="p"><i>$</i>181.60</span><span class="c dn">9.26%</span></span>
+        <span class="q"><span class="s">AAPL</span><span class="p"><i>$</i>344.17</span><span class="c dn">1.53%</span></span>
+        <span class="q"><span class="s" style="color:#84A7FF">ASML</span><span class="p"><i>€</i>1,282.40</span><span class="c upc">2.59%</span></span>
+        <span class="q"><span class="s" style="color:#6EADFF">META</span><span class="p"><i>$</i>605.08</span><span class="c dn">3.96%</span></span>
+      </div><div class="dockedge dock"><div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div><div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div><div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div></div></div>
+    </div>
+
+    <div class="prop">
+      <div class="text"><span class="tag">D</span><h3>Compact, twee regels</h3>
+        <p>Een kleine naam boven de koers. Op een smal scherm passen zo bijna twee keer zoveel koersen naast het Dock.</p>
+        <p class="con">Op 1080p wordt de bovenste regel 10,5 pt: klein, maar scherp.</p></div>
+      <div class="stage"><div class="tape stack">
+        <span class="q"><span class="s" style="color:#7EC21B">NVDA</span><span class="row"><span class="p"><i>$</i>181.60</span><span class="c dn">9.26%</span></span></span>
+        <span class="q"><span class="s">AAPL</span><span class="row"><span class="p"><i>$</i>344.17</span><span class="c dn">1.53%</span></span></span>
+        <span class="q"><span class="s" style="color:#37B6FF">MSFT</span><span class="row"><span class="p"><i>$</i>535.93</span><span class="c dn">3.57%</span></span></span>
+        <span class="q"><span class="s" style="color:#84A7FF">ASML</span><span class="row"><span class="p"><i>€</i>1,282.40</span><span class="c upc">2.59%</span></span></span>
+        <span class="q"><span class="s" style="color:#FF7E77">VWCE</span><span class="row"><span class="p"><i>€</i>164.44</span><span class="c dn">0.93%</span></span></span>
+      </div><div class="dockedge dock"><div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div><div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div><div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div></div></div>
+    </div>
+
+    <div class="prop">
+      <div class="text"><span class="tag">E</span><h3>Mini-sparkline</h3>
+        <p>Een lijntje van 34 pt met het koersverloop van vandaag, na elke koers. Je ziet in één oogopslag of het een rustige of een wilde dag is.</p>
+        <p class="pro">De data is er al: de vijfminutenkoersen komen al binnen.</p></div>
+      <div class="stage"><div class="tape spark">
+        <span class="q"><span class="s" style="color:#7EC21B">NVDA</span><span class="p"><i>$</i>181.60</span><svg viewBox="0 0 34 14"><polyline fill="none" stroke="#FF7D76" stroke-width="1.4" stroke-linecap="round" points="0,2 5,3 9,5 13,4 17,8 21,7 25,10 29,11 34,12"/></svg><span class="c dn">9.26%</span></span>
+        <span class="q"><span class="s" style="color:#84A7FF">ASML</span><span class="p"><i>€</i>1,282.40</span><svg viewBox="0 0 34 14"><polyline fill="none" stroke="#3EE6A8" stroke-width="1.4" stroke-linecap="round" points="0,11 5,10 9,8 13,9 17,6 21,7 25,4 29,5 34,3"/></svg><span class="c upc">2.59%</span></span>
+        <span class="q"><span class="s">AAPL</span><span class="p"><i>$</i>344.17</span><svg viewBox="0 0 34 14"><polyline fill="none" stroke="#FF7D76" stroke-width="1.4" stroke-linecap="round" points="0,4 5,6 9,5 13,8 17,7 21,9 25,8 29,10 34,10"/></svg><span class="c dn">1.53%</span></span>
+      </div><div class="dockedge dock"><div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div><div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div><div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div></div></div>
+    </div>
+
+    <div class="prop">
+      <div class="text"><span class="tag">F</span><h3>Door het Dock heen</h3>
+        <p>Eén doorlopende band: rechts van het Dock komt hij binnen, achter het Dock schuift hij door, links gaat hij weer verder. Zo gebruik je beide kanten.</p>
+        <p class="pro">Dubbele ruimte en een sterk eigen beeld. Technisch twee vensters met één gedeelde klok.</p></div>
+      <div class="stage">
+        <div class="tape" style="right:auto;width:340px;left:14px">
+          <span class="q"><span class="s">AAPL</span><span class="p"><i>$</i>344.17</span><span class="c dn">1.53%</span></span>
+          <span class="q"><span class="s" style="color:#37B6FF">MSFT</span><span class="p"><i>$</i>535.93</span><span class="c dn">3.57%</span></span>
+        </div>
+        <div class="dock" style="left:370px;width:300px;border-radius:26px"><div class="tile" style="background:linear-gradient(#5AC8FA,#1E7BF2)"></div><div class="tile" style="background:linear-gradient(#F2F2F7,#C7C7CC)"></div><div class="tile" style="background:linear-gradient(#64D2FF,#0A84FF)"></div><div class="tile" style="background:linear-gradient(#5E9BFF,#2D6CF6)"></div></div>
+        <div class="tape" style="left:690px;right:14px;padding-left:0">
+          <span class="q"><span class="s" style="color:#7EC21B">NVDA</span><span class="p"><i>$</i>181.60</span><span class="c dn">9.26%</span></span>
+          <span class="q"><span class="s">S&amp;P 500</span><span class="p">7,353.73</span><span class="c dn">4.36%</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Logos via Parqet, for personal design review only · Colours computed by Tape's own Legibility.adjust · Prices from Yahoo Finance, 6 Nov 2026</footer>
+</div>
+</body>
+</html>

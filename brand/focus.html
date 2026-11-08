@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tape — Focus</title>
+<style>
+  :root {
+    --canvas: #08090B;
+    --panel: #121316;
+    --line: rgba(255,255,255,0.07);
+    --ink: #F4F4F2;
+    --muted: #8E8E93;
+    --quiet: #5A5A5F;
+    --mint: #3EE6A8;
+    --mint-deep: #013522;
+    --coral: #FF7D76;
+    --coral-deep: #4E1413;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    --rounded: ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --r: 22px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  .page { width: 1240px; margin: 40px auto 64px; }
+  header.top { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 18px; }
+  header.top .title, header.top .meta { font: 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  header.top .meta { color: var(--quiet); letter-spacing: 0.04em; text-transform: none; }
+
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+  .panel { position: relative; background: var(--panel); border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); min-height: 220px; }
+  .s2 { grid-column: span 2; } .s3 { grid-column: span 3; } .s4 { grid-column: span 4; } .s6 { grid-column: span 6; }
+  .label { position: absolute; left: 22px; top: 18px; font: 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--quiet); z-index: 5; }
+  .num { position: absolute; right: 22px; top: 18px; font: 11px/1 var(--mono); color: var(--quiet); z-index: 5; }
+  .foot { position: absolute; left: 22px; right: 22px; bottom: 16px; font: 11px/1.5 var(--mono); color: var(--quiet); z-index: 5; }
+  .shot { display: block; width: 100%; height: auto; }
+  .note { font: 11px/1.6 var(--mono); color: var(--muted); }
+
+  /* 01 Cover */
+  .cover { min-height: 420px; display: flex; flex-direction: column; justify-content: space-between;
+           background: radial-gradient(60% 80% at 10% 0%, rgba(62,230,168,0.07), transparent 60%), var(--panel); }
+  .cover .head { padding: 62px 40px 0; display: flex; align-items: flex-end; justify-content: space-between; }
+  .cover h1 { margin: 0; font-size: 112px; font-weight: 600; letter-spacing: -0.055em; line-height: 0.86; }
+  .cover h1 .dot { color: var(--mint); }
+  .cover .tag { font-size: 19px; color: var(--muted); letter-spacing: -0.01em; text-align: right; line-height: 1.35; }
+  .cover .tag b { color: var(--ink); font-weight: 600; }
+  .cover .hero { margin: 0 0 0 0; border-top: 1px solid var(--line); }
+
+  /* 02 Essence */
+  .essence { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 28px 54px; }
+  .essence .big { font-size: 38px; font-weight: 600; letter-spacing: -0.045em; line-height: 0.98; }
+  .essence .big span { color: var(--quiet); }
+  .essence .rules { margin-top: 22px; display: grid; gap: 9px; }
+  .essence .rules div { font: 12px/1.45 var(--mono); color: var(--muted); padding-left: 16px; position: relative; }
+  .essence .rules div::before { content: ""; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border-radius: 2px; background: var(--mint); }
+
+  /* 03 Construction */
+  .construct { min-height: 0; padding: 54px 26px 52px; }
+  .construct .frame { position: relative; width: 1146px; height: 211px; border-radius: 14px; overflow: hidden; margin: 0 auto; }
+  .construct .frame img { position: absolute; inset: 0; width: 100%; height: 100%; filter: saturate(0.65) brightness(0.62); }
+  .construct svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .construct .legend { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; margin: 22px 8px 0; }
+  .construct .legend b { display: block; font: 600 13px/1.3 var(--font); color: var(--ink); margin-bottom: 4px; letter-spacing: -0.01em; }
+
+  /* 04 States */
+  .states { padding: 54px 18px 18px; display: grid; gap: 8px; }
+  .states .row { display: grid; grid-template-columns: 74px 1fr; align-items: center; gap: 10px; }
+  .states .row span { font: 11px/1.3 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .states img { border-radius: 10px; }
+
+  /* 05 Motion */
+  .motion { padding: 54px 22px 46px; }
+  .motion .frames { display: grid; gap: 6px; }
+  .motion .f { display: grid; grid-template-columns: 62px auto; align-items: center; gap: 10px; }
+  .motion .f img { width: 368px; height: 56px; border-radius: 8px; image-rendering: pixelated; }
+  .motion .f span { font: 11px/1 var(--mono); color: var(--muted); text-align: right; }
+  .motion .curve { margin-top: 14px; }
+
+  /* 06 Glass */
+  .glass { padding: 54px 18px 18px; display: grid; gap: 10px; align-content: start; }
+  .glass img { border-radius: 10px; }
+  .glass .pair { display: grid; grid-template-columns: 74px 1fr; align-items: center; gap: 10px; }
+  .glass .pair span { font: 11px/1.3 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* 07 Tiles */
+  .tiles { padding: 58px 22px 50px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px 0; justify-items: center; }
+  .tiles img { width: 78px; height: 78px; }
+
+  /* 08 Colour */
+  .colour { padding: 54px 22px 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-content: start; }
+  .sw { border-radius: 14px; padding: 12px; min-height: 92px; display: flex; flex-direction: column; justify-content: space-between; font: 10.5px/1.45 var(--mono); }
+  .sw b { font: 600 15px/1 var(--rounded); letter-spacing: -0.01em; }
+  .pillrow { grid-column: span 4; display: flex; gap: 10px; align-items: center; padding: 6px 2px 0; }
+  .pill { font: 600 14px/1 var(--rounded); font-variant-numeric: tabular-nums; padding: 5px 9px; border-radius: 99px; }
+
+  /* 09 Type */
+  .type { padding: 60px 26px 0; }
+  .type .price { font: 600 76px/1 var(--rounded); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .type .price sup { font-size: 0.6em; vertical-align: 0; position: relative; top: -0.42em; color: rgba(244,244,242,0.6); margin-right: 3px; }
+  .type .price .frac { color: rgba(244,244,242,0.82); }
+  .type .who { margin-top: 18px; display: flex; gap: 14px; align-items: baseline; }
+  .type .who b { font: 600 30px/1 var(--font); color: #8CD92B; letter-spacing: -0.01em; }
+  .type .who span { font: 400 20px/1 var(--font); color: rgba(244,244,242,0.62); }
+
+  /* 10–12 */
+  .light, .sizes { padding: 54px 18px 18px; display: grid; gap: 8px; align-content: start; }
+  .light img, .sizes img { border-radius: 10px; }
+  .clock { padding: 54px 22px 22px; }
+  .clock .faces { display: flex; gap: 18px; margin: 8px 0 18px; }
+  .clock .face { text-align: center; }
+  .clock .face span { display: block; margin-top: 8px; font: 11px/1 var(--mono); color: var(--muted); }
+  .clock .zoom { width: 84px; height: 84px; border-radius: 16px; overflow: hidden; position: relative; background: #1a1b1f; }
+  .clock .zoom img { position: absolute; width: 1824px; height: 336px; left: -1264px; top: -133px; }
+  /* 13–14 */
+  .narrow, .sharp { padding: 54px 22px 92px; display: grid; gap: 12px; align-content: start; }
+  .narrow .row, .sharp .row { display: grid; grid-template-columns: 62px auto; align-items: center; gap: 12px; }
+  .narrow .row span, .sharp .row span, .sharp figcaption { font: 11px/1.3 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .narrow .shots { display: flex; gap: 10px; align-items: center; }
+  .narrow img { height: 90px; width: auto; border-radius: 10px; }
+  .sharp .pairs { display: flex; gap: 14px; }
+  .sharp figure { margin: 0; }
+  .sharp figcaption { margin-top: 6px; text-transform: none; letter-spacing: 0.02em; }
+  .sharp img { display: block; image-rendering: pixelated; border-radius: 8px; }
+  .sharp .g img { width: 126px; height: 126px; }
+  .sharp .c img { width: 198px; height: 138px; }
+  .sharp .t img { width: 230px; height: 63px; }
+  .sharp .after figcaption { color: var(--mint); }
+  footer { margin: 18px 4px 0; display: flex; justify-content: space-between; font: 11px/1.5 var(--mono); color: var(--quiet); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div class="title">Tape · Focus</div>
+    <div class="meta">Ontwerpsysteem · versie 3 · 8 november 2026</div>
+  </header>
+
+  <div class="grid">
+    <!-- 01 -->
+    <section class="panel s4 cover">
+      <div class="label">01 Focus</div><div class="num">beside the Dock</div>
+      <div class="head">
+        <h1>Focus<span class="dot">.</span></h1>
+        <div class="tag"><b>Eén koers tegelijk.</b><br>Scherp, groot, en dan de volgende.</div>
+      </div>
+      <img class="shot hero" src="focus/state-up.png" alt="">
+    </section>
+
+    <!-- 02 -->
+    <section class="panel s2 essence">
+      <div class="label">02 Idee</div>
+      <div class="big">Rack focus.<br><span>Wat komt, wordt scherp. Wat gaat, vervaagt.</span></div>
+      <div class="rules">
+        <div>Eén raster voor alle koersen: niets verspringt</div>
+        <div>Kolommen stellen apart scherp, links naar rechts</div>
+        <div>Geen achtergrond, of glas als je dat wil</div>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section class="panel s6 construct">
+      <div class="label">03 Constructie</div><div class="num">punten, op 14 pt tekst</div>
+      <div class="frame">
+        <img src="focus/state-up.png" alt="">
+        <svg viewBox="0 0 521.275 96" preserveAspectRatio="none">
+          <defs><style>
+            .g { stroke: rgba(255,255,255,0.34); stroke-width: 0.25; fill: none; }
+            .gd { stroke: rgba(255,255,255,0.3); stroke-width: 0.25; stroke-dasharray: 0.8 0.8; fill: none; }
+            .m { stroke: #3EE6A8; stroke-width: 0.3; fill: none; }
+            .t { fill: rgba(255,255,255,0.72); font: 3.6px ui-monospace, Menlo, monospace; }
+            .tm { fill: #3EE6A8; font: 3.6px ui-monospace, Menlo, monospace; }
+          </style></defs>
+          <!-- the grid -->
+          <rect class="gd" x="19" y="22" width="337" height="56"/>
+          <!-- columns -->
+          <g>
+            <line class="g" x1="19" y1="14" x2="19" y2="86"/><line class="g" x1="51" y1="14" x2="51" y2="86"/>
+            <line class="g" x1="58" y1="14" x2="58" y2="86"/><line class="g" x1="114" y1="14" x2="114" y2="86"/>
+            <line class="g" x1="124" y1="14" x2="124" y2="86"/><line class="g" x1="235" y1="14" x2="235" y2="86"/>
+            <line class="g" x1="241" y1="14" x2="241" y2="86"/><line class="g" x1="302" y1="14" x2="302" y2="86"/>
+            <line class="g" x1="310" y1="14" x2="310" y2="86"/><line class="g" x1="356" y1="14" x2="356" y2="86"/>
+          </g>
+          <text class="t" x="19" y="11">tegel 32</text>
+          <text class="t" x="58" y="11">naam</text>
+          <text class="t" x="124" y="11">prijs · rechts uitgelijnd</text>
+          <text class="t" x="241" y="11">beweging</text>
+          <text class="t" x="310" y="11">de dag</text>
+          <text class="t" x="362" y="11">klok</text>
+          <!-- baselines -->
+          <line class="m" x1="58" y1="49" x2="114" y2="49"/><line class="m" x1="58" y1="62" x2="114" y2="62"/>
+          <line class="m" x1="124" y1="58" x2="235" y2="58"/>
+          <text class="tm" x="58" y="92">twee gedeelde basislijnen</text>
+          <text class="tm" x="124" y="92">gecentreerd op de kapitalen</text>
+          <!-- tile -->
+          <rect class="m" x="19" y="34" width="32" height="32" rx="7.2"/>
+          <text class="tm" x="19" y="31">r 7,2 · continu</text>
+          <!-- pill & chart notes -->
+          <text class="t" x="241" y="31">pil 20 · één breedte</text>
+          <text class="t" x="310" y="31">open → slot</text>
+          <!-- ring -->
+          <circle class="m" cx="373" cy="50" r="7"/>
+          <text class="tm" x="362" y="64">12 · klok</text>
+          <!-- gaps -->
+          <text class="t" x="51.5" y="84">7</text><text class="t" x="115" y="84">10</text><text class="t" x="235.6" y="84">6</text><text class="t" x="302.6" y="84">8</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="note"><b>Tegel</b>Een app-icoon: 57% van de hoogte, hoek 22,5% met continue curve, één glans en een rand van 1 pixel.</div>
+        <div class="note"><b>Naam</b>Ticker in merkkleur, 15 semibold, boven de naam zonder "Inc." of "N.V.", 11 regular. Wordt per woord ingekort.</div>
+        <div class="note"><b>Prijs</b>22 rounded, tabulair, rechts uitgelijnd zodat decimalen gelijk staan. Munt kleiner, aan de kapitaalhoogte. Decimalen een stap stiller.</div>
+        <div class="note"><b>Beweging</b>Volle pil in mint of koraal met diepe tekst. Leesbaar op elke foto. Alle pillen even breed.</div>
+        <div class="note"><b>De dag</b>Van opening tot slot: om 11 uur staat de lijn een kwart ver. Stippellijn = waar de beweging van gemeten wordt.</div>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section class="panel s3 states">
+      <div class="label">04 Toestanden</div><div class="num">voorbeelddagen</div>
+      <div class="row"><span>Stijgt</span><img class="shot" src="focus/state-up.png" alt=""></div>
+      <div class="row"><span>Daalt</span><img class="shot" src="focus/state-down.png" alt=""></div>
+      <div class="row"><span>Vlak</span><img class="shot" src="focus/state-flat.png" alt=""></div>
+      <div class="row"><span>Gesloten</span><img class="shot" src="focus/state-closed.png" alt=""></div>
+    </section>
+
+    <!-- 05 -->
+    <section class="panel s3 motion">
+      <div class="label">05 Beweging</div><div class="num">live, op 1×, pixel voor pixel</div>
+      <div class="frames">
+        <div class="f"><span>0 ms</span><img src="focus/motion/flip-00-004ms.png" alt=""></div>
+        <div class="f"><span>211 ms</span><img src="focus/motion/flip-02-211ms.png" alt=""></div>
+        <div class="f"><span>286 ms</span><img src="focus/motion/flip-03-286ms.png" alt=""></div>
+        <div class="f"><span>361 ms</span><img src="focus/motion/flip-04-361ms.png" alt=""></div>
+        <div class="f"><span>512 ms</span><img src="focus/motion/flip-06-512ms.png" alt=""></div>
+      </div>
+      <div class="foot">Uit: 0,26 s, 5 px wazig, 6 pt omhoog. In: 0,52 s, uit de wazigheid. 35 ms tussen kolommen.<br>Een nieuwe prijs tikt alleen de kolommen die veranderen, in de richting van de koers.</div>
+    </section>
+
+    <!-- 06 -->
+    <section class="panel s2 glass">
+      <div class="label">06 Achtergrond</div><div class="num">instelling</div>
+      <div class="pair"><span>Helder</span><img class="shot" src="focus/state-up.png" alt=""></div>
+      <div class="pair"><span>Glas</span><img class="shot" src="focus/state-up-glass.png" alt=""></div>
+      <div class="note" style="margin-top:6px">Glas: het materiaal van het Dock. Hoeken concentrisch met de tegel (7,2 + 8 = 15,2). Helder: een zachte sluier achter het raster houdt de tekst leesbaar op een drukke foto.</div>
+    </section>
+
+    <!-- 07 -->
+    <section class="panel s4 tiles">
+      <div class="label">07 Tegels</div><div class="num">logo, of wat ervoor in de plaats komt</div>
+      <img src="focus/tile-00.png" alt=""><img src="focus/tile-01.png" alt=""><img src="focus/tile-02.png" alt=""><img src="focus/tile-03.png" alt=""><img src="focus/tile-04.png" alt=""><img src="focus/tile-05.png" alt=""><img src="focus/tile-06.png" alt="">
+      <img src="focus/tile-07.png" alt=""><img src="focus/tile-08.png" alt=""><img src="focus/tile-09.png" alt=""><img src="focus/tile-10.png" alt=""><img src="focus/tile-11.png" alt=""><img src="focus/tile-12.png" alt=""><img src="focus/tile-13.png" alt="">
+    </section>
+
+    <!-- 08 -->
+    <section class="panel s2 type">
+      <div class="label">08 Type</div><div class="num">SF Pro · Rounded</div>
+      <div class="price"><sup>$</sup>187<span class="frac">.27</span></div>
+      <div class="who"><b>NVDA</b><span>NVIDIA</span></div>
+    </section>
+
+    <!-- 09 -->
+    <section class="panel s4 colour">
+      <div class="label">09 Kleur</div><div class="num">donker · licht</div>
+      <div class="sw" style="background:#3EE6A8;color:#013522"><b>Mint</b>#3EE6A8<br>tekst #013522</div>
+      <div class="sw" style="background:#FF7D76;color:#4E1413"><b>Koraal</b>#FF7D76<br>tekst #4E1413</div>
+      <div class="sw" style="background:#08875A;color:#fff"><b>Licht +</b>#08875A</div>
+      <div class="sw" style="background:#D02E27;color:#fff"><b>Licht −</b>#D02E27</div>
+      <div class="sw" style="background:linear-gradient(#3D3E44,#2A2B30);color:#F4F4F2;border:1px solid rgba(255,255,255,0.08)"><b>Grafiet</b>#37383D<br>tegel zonder logo</div>
+      <div class="sw" style="background:#F7F7F5;color:#141416"><b>Inkt</b>#F7F7F5<br>op donker</div>
+      <div class="sw" style="background:#141416;color:#F7F7F5;border:1px solid rgba(255,255,255,0.08)"><b>Inkt</b>#141416<br>op licht</div>
+      <div class="sw" style="background:rgba(255,255,255,0.1);color:#F4F4F2"><b>Vlak</b>wit 20%</div>
+    </section>
+
+    <!-- 10 -->
+    <section class="panel s2 light">
+      <div class="label">10 Lichte wallpaper</div><div class="num">donkere inkt, witte sluier</div>
+      <img class="shot" src="focus/light-up.png" alt="">
+      <img class="shot" src="focus/light-down.png" alt="">
+    </section>
+
+    <!-- 11 -->
+    <section class="panel s2 sizes">
+      <div class="label">11 Maten</div><div class="num">12 · 14 · 18 pt</div>
+      <img class="shot" src="focus/size-12.png" alt="">
+      <img class="shot" src="focus/size-14.png" alt="">
+      <img class="shot" src="focus/size-18.png" alt="">
+      <div class="note" style="margin-top:4px">Te smal? Eerst wordt de naam korter, dan de lucht, dan de grafiek smaller. Pas daarna verdwijnt de grafiek.</div>
+    </section>
+
+    <!-- 12 -->
+    <section class="panel s2 clock">
+      <div class="label">12 Aftellen</div><div class="num">geen spinner</div>
+      <div class="faces">
+        <div class="face"><div class="zoom"><img src="focus/ring-0.png" alt=""></div><span>net begonnen</span></div>
+        <div class="face"><div class="zoom"><img src="focus/ring-1.png" alt=""></div><span>halfweg</span></div>
+        <div class="face"><div class="zoom"><img src="focus/ring-2.png" alt=""></div><span>bijna</span></div>
+      </div>
+      <div class="note">Een wijzerplaat bij het Dock: een fijne ring met een taartpunt die rondgaat. Een losse boog leest als laden. Onder de muis staat hij stil, en daarna loopt hij verder waar hij was. Bij elke wissel draait hij eerst terug.</div>
+    </section>
+
+    <!-- 13 -->
+    <section class="panel s3 narrow">
+      <div class="label">13 Smal</div><div class="num">MacBook, lang Dock · live, 2×</div>
+      <div class="row"><span>173 pt</span><div class="shots"><img src="focus/detail/live-173.png" alt=""></div></div>
+      <div class="row"><span>88 pt</span><div class="shots"><img src="focus/detail/live-88.png" alt=""><img src="focus/detail/live-88-flip.png" alt=""><img src="focus/detail/live-88-glass.png" alt=""></div></div>
+      <div class="foot">Naast een Dock van zeventien iconen blijft op 1512 pt maar 74 pt over. Tape verdween onder 120 pt. Nu stapelt Focus ticker, prijs en beweging, op leesbare maat, tot 56 pt. Een krappe strook krijgt de helft van de schermmarge terug.</div>
+    </section>
+
+    <!-- 14 -->
+    <section class="panel s3 sharp">
+      <div class="label">14 Scherpte</div><div class="num">voor · na, pixel voor pixel</div>
+      <div class="pairs">
+        <figure class="g"><img src="focus/detail/glyph-before-1x.png" alt=""><figcaption>symbool, 1×: verkleinde bitmap</figcaption></figure>
+        <figure class="g after"><img src="focus/detail/glyph-after-1x.png" alt=""><figcaption>vector op ware grootte</figcaption></figure>
+      </div>
+      <div class="pairs">
+        <figure class="c"><img src="focus/detail/chart-before-2x.png" alt=""><figcaption>grafiek, 2×: elke minuut</figcaption></figure>
+        <figure class="c after"><img src="focus/detail/chart-after-2x.png" alt=""><figcaption>gemiddeld per pixelkolom</figcaption></figure>
+      </div>
+      <div class="pairs">
+        <figure class="t"><img src="focus/detail/text-before-1x.png" alt=""><figcaption>tekst, 1×: dun</figcaption></figure>
+        <figure class="t after"><img src="focus/detail/text-after-1x.png" alt=""><figcaption>zoals macOS zelf (+9% contrast)</figcaption></figure>
+      </div>
+      <div class="foot">Ook: het klokje op schermresolutie (was 1×), tekst op hele pixels, venster op hele punten. Getest en verworpen: 4× renderen en verkleinen (niet scherper) en een strakkere schaduw (geen verschil).</div>
+    </section>
+  </div>
+
+  <footer>
+    <span>Alle beelden zijn door Tape zelf getekend (Tape -TapeFocusBoard), over je eigen wallpaper. De bewegingsbeelden zijn opnames van het echte venster.</span>
+    <span>yorben.me</span>
+  </footer>
+</div>
+</body>
+</html>

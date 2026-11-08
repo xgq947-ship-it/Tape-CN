@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use or reference Tape, please cite it as below."
+authors:
+  - family-names: "Vander Sleyen"
+    given-names: "Yorben"
+    website: "https://yorben.me/#tape"
+title: "Tape: a macOS stock ticker in the empty corner beside the Dock"
+version: 1.0.0
+date-released: 2026-11-08
+url: "https://github.com/Yvsleyen00941/Tape"
