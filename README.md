@@ -180,3 +180,8 @@ add `-TapeShotsAlpha YES` to keep their transparency, to lay them over a real sc
   so light or dark text is chosen for that still. Contrast in Settings can fix it either way.
 - Logos come from third-party services and are cached for 30 days in
   `~/Library/Application Support/Tape/Logos`.
+
+## Also by Yorben
+
+- **[Cockpit](https://github.com/Yvsleyen00941/Cockpit)** — Unified daily productivity HUD and menu bar daemon.
+- **[Rime](https://github.com/Yvsleyen00941/Rime)** — Distraction-free reading engine for PDF, EPUB, and Markdown with typography-first continuous layout.
