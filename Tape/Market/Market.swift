@@ -60,9 +60,9 @@ final class Market {
         isLoading = true
         defer { isLoading = false }
         do {
-            var fresh = try await Yahoo.quotes(for: wanted)
+            var fresh = try await QuoteFeed.quotes(for: wanted)
             guard !Task.isCancelled else { return }
-            for (symbol, quote) in fresh {
+            for (symbol, quote) in fresh where fresh[symbol]?.open == nil {
                 if let start = quote.sessionStart, let known = opens[symbol], known.session == start {
                     fresh[symbol]?.open = known.value
                 }
@@ -86,7 +86,8 @@ final class Market {
     private func fetchMissingOpens() {
         guard openTask == nil else { return }
         let missing = quotes.values.filter { quote in
-            guard quote.kind != .crypto, quote.kind != .currency, let start = quote.sessionStart, start <= .now else { return false }
+            guard quote.kind != .crypto, quote.kind != .currency, quote.open == nil,
+                  let start = quote.sessionStart, start <= .now else { return false }
             return opens[quote.symbol]?.session != start
         }
         guard !missing.isEmpty else { return }

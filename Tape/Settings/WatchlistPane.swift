@@ -5,7 +5,7 @@ struct WatchlistPane: View {
     let model: AppModel
 
     @State private var query = ""
-    @State private var hits: [Yahoo.SearchHit] = []
+    @State private var hits: [SymbolSearchHit] = []
     @State private var searching = false
     @State private var renaming: WatchItem?
     @State private var newLabel = ""
@@ -71,7 +71,7 @@ struct WatchlistPane: View {
     private var results: some View {
         VStack(spacing: 0) {
             if hits.isEmpty && !searching {
-                Text("Nothing on Yahoo Finance matches “\(query)”. Press Return to add it as a symbol anyway.")
+                Text("Nothing matches “\(query)”. Press Return to add it as a symbol anyway.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -119,7 +119,7 @@ struct WatchlistPane: View {
         guard !Task.isCancelled else { return }
         searching = true
         defer { searching = false }
-        let found = (try? await Yahoo.search(text)) ?? []
+        let found = await SymbolSearch.search(text)
         guard !Task.isCancelled, text == query else { return }
         hits = found
     }

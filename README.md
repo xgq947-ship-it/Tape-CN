@@ -25,6 +25,13 @@ System Settings → Privacy & Security and click Open Anyway. For an exact fit, 
 Accessibility access from Settings → Placement: it uses it only to read where the Dock is.
 Without it, Tape works the Dock out from the Dock's own preferences.
 
+### Where the quotes come from
+
+Tencent's public endpoint carries Shanghai, Shenzhen, Hong Kong and the US in one request, and
+answers from mainland China; Yahoo Finance fills in everything else (crypto, currencies,
+futures, Europe, Japan, Korea) and stands in whenever Tencent has nothing. Both are unofficial;
+prices may be delayed. Search finds A-shares by Chinese name as well as by code.
+
 ### Build it
 
 ```sh
